@@ -19,7 +19,8 @@ namespace MoviesApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Descriptión = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

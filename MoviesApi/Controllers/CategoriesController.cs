@@ -24,9 +24,9 @@ namespace MoviesApi.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Category category)
         {
-            context.Categories.Add(category);
+            context.Add(category);
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(category);
         }
     }
 }

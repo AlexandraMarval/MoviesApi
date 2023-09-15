@@ -51,7 +51,7 @@ namespace MoviesApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Descriptión")
@@ -65,21 +65,7 @@ namespace MoviesApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Movies");
-                });
-
-            modelBuilder.Entity("MoviesApi.Entidades.Movie", b =>
-                {
-                    b.HasOne("MoviesApi.Entidades.Category", null)
-                        .WithMany("Movies")
-                        .HasForeignKey("CategoryId");
-                });
-
-            modelBuilder.Entity("MoviesApi.Entidades.Category", b =>
-                {
-                    b.Navigation("Movies");
                 });
 #pragma warning restore 612, 618
         }

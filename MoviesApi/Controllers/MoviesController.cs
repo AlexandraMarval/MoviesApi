@@ -15,6 +15,13 @@ namespace MoviesApi.Controllers
             this.context = context;
         }
 
+        [HttpGet("int:id")]
+        public async Task<ActionResult<List<Movie>>> Get(int id)
+        {
+            var movie = await context.Movies.FirstOrDefaultAsync(movie => movie.Id == id);
+            return Ok(movie);
+        }
+
         [HttpGet(Name = "obtenerPeliculas")]
         public async Task<ActionResult<List<Movie>>> Get()
         {
@@ -27,6 +34,21 @@ namespace MoviesApi.Controllers
             context.Add(movies);
             await context.SaveChangesAsync();
             return Ok(movies);
-        }      
+        }
+
+
+        [HttpPut("int:id")]
+        public async Task<ActionResult> Put(int id)
+        {
+            var existeMovie = context.Movies.FirstOrDefault(movie => movie.Id == id);
+
+            if (existeMovie == null)
+            {
+                return BadRequest();
+            }
+            context.Update(existeMovie);
+            await context.SaveChangesAsync();
+            return Ok(existeMovie);
+        }
     }
 }

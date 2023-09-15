@@ -10,6 +10,7 @@ namespace MoviesApi
         }    
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
 
     }
 }
