@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MoviesApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Movies : Migration
+    public partial class Movie : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,10 +17,9 @@ namespace MoviesApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripción = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AñoDeLanzamiento = table.Column<int>(type: "int", nullable: false),
-                    IdCategoria = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Descriptión = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

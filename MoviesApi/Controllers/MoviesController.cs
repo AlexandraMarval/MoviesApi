@@ -16,13 +16,13 @@ namespace MoviesApi.Controllers
         }
 
         [HttpGet(Name = "obtenerPeliculas")]
-        public async Task<ActionResult<List<Movies>>> Get()
+        public async Task<ActionResult<List<Movie>>> Get()
         {
             return await context.Movies.ToListAsync();   
         }
 
         [HttpPost(Name = "crearPelicula")]
-        public async Task<ActionResult> Post(Movies movies)
+        public async Task<ActionResult> Post(Movie movies)
         {
             context.Add(movies);
             await context.SaveChangesAsync();

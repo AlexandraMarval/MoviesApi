@@ -8,7 +8,8 @@ namespace MoviesApi
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }   
-        public DbSet<Movies> Movies { get; set; }
-        public DbSet<Categories> Categories { get; set; }            
+        public DbSet<Movie> Movies { get; set; }
+
+        //public DbSet<Categories> Categories { get; set; }            
     }
 }
