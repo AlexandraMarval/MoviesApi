@@ -5,7 +5,7 @@ using MoviesApi.Entidades;
 namespace MoviesApi.Controllers
 {
     [ApiController]
-    [Route("api/controller")]
+    [Route("api/controllerMovies")]
     public class MoviesController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -15,19 +15,18 @@ namespace MoviesApi.Controllers
             this.context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Get()
+        [HttpGet(Name = "obtenerPeliculas")]
+        public async Task<ActionResult<List<Movies>>> Get()
         {
-            var movies = await context.Movies.ToListAsync();
-            return Ok(movies);
+            return await context.Movies.ToListAsync();   
         }
 
-        [HttpPost]
+        [HttpPost(Name = "crearPelicula")]
         public async Task<ActionResult> Post(Movies movies)
         {
             context.Add(movies);
             await context.SaveChangesAsync();
             return Ok(movies);
-        }
+        }      
     }
 }
