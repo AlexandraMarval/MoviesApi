@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MoviesApi.DTOs;
 using MoviesApi.Entidades;
 
 namespace MoviesApi.Controllers
@@ -9,10 +11,12 @@ namespace MoviesApi.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
-        public MoviesController(ApplicationDbContext context) 
+        public MoviesController(ApplicationDbContext context, IMapper mapper) 
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         [HttpGet("int:id")]
@@ -29,11 +33,19 @@ namespace MoviesApi.Controllers
         }
 
         [HttpPost(Name = "crearPelicula")]
-        public async Task<ActionResult> Post(Movie movies)
+        public async Task<ActionResult> Post(MovieCreacionDTO movieCreacionDTO)
         {
-            context.Add(movies);
+            var existePeliculaConElMismoNombre = await context.Movies.AnyAsync(movie => movie.Name == movieCreacionDTO.Name);
+
+            if(existePeliculaConElMismoNombre) 
+            {
+                return BadRequest($"Ya existe una pelicula con ese mismo nombre{movieCreacionDTO.Name}");
+            }
+            var movie =  mapper.Map<Movie>(movieCreacionDTO);
+
+            context.Add(movie);
             await context.SaveChangesAsync();
-            return Ok(movies);
+            return Ok(movie);
         }
 
 

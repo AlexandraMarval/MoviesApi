@@ -7,6 +7,7 @@
         public DateTime RentaDate { get; set; }
         public DateTime ReturnDate { get; set; }
         public int RentalRates { get; set; }
+        public List<Movie> movies { get; set; }
 
     }
 }
