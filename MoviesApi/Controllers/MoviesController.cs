@@ -20,16 +20,23 @@ namespace MoviesApi.Controllers
         }
 
         [HttpGet("int:id")]
-        public async Task<ActionResult<List<Movie>>> Get(int id)
+        public async Task<ActionResult<MovieDTO>> Get(int id)
         {
             var movie = await context.Movies.FirstOrDefaultAsync(movie => movie.Id == id);
-            return Ok(movie);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return mapper.Map<MovieDTO>(movie);
+            
         }
 
         [HttpGet(Name = "obtenerPeliculas")]
-        public async Task<ActionResult<List<Movie>>> Get()
+        public async Task<ActionResult<List<MovieDTO>>> Get()
         {
-            return await context.Movies.ToListAsync();   
+            var movies = await context.Movies.ToListAsync();
+            return mapper.Map<List<MovieDTO>>(movies);
         }
 
         [HttpPost(Name = "crearPelicula")]
@@ -45,9 +52,8 @@ namespace MoviesApi.Controllers
 
             context.Add(movie);
             await context.SaveChangesAsync();
-            return Ok(movie);
+            return Ok();
         }
-
 
         [HttpPut("int:id")]
         public async Task<ActionResult> Put(int id)

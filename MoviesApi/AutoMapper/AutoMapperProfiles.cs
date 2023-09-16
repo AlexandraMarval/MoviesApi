@@ -9,6 +9,8 @@ namespace MoviesApi.AutoMapper
         public AutoMapperProfiles() 
         {
             CreateMap<MovieCreacionDTO, Movie>();
+            CreateMap<CategoryCreacionDTO, Category>();
+            CreateMap<Movie, MovieDTO>();
         }
     }
 }

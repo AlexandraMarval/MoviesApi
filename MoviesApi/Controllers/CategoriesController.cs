@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MoviesApi.DTOs;
 using MoviesApi.Entidades;
 
 namespace MoviesApi.Controllers
@@ -9,10 +11,12 @@ namespace MoviesApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -21,9 +25,18 @@ namespace MoviesApi.Controllers
             return await context.Categories.ToListAsync();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Post(Category category)
+        [HttpPost(Name = "crearCategoria")]
+        public async Task<ActionResult> Post(CategoryCreacionDTO categoryCreacionDTO)
         {
+            var existeYaEsaCategorria = await context.Categories.AnyAsync(category => category.Name == categoryCreacionDTO.Name);
+
+            if (existeYaEsaCategorria)
+            {
+                return BadRequest($"Ya esta categoria existe{categoryCreacionDTO.Name}");
+            }
+
+            var category = mapper.Map<Category>(categoryCreacionDTO);
+
             context.Add(category);
             await context.SaveChangesAsync();
             return Ok(category);
