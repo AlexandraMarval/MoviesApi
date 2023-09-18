@@ -12,8 +12,8 @@ using MoviesApi;
 namespace MoviesApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230915164853_Rental")]
-    partial class Rental
+    [Migration("20230918110717_InicialAll")]
+    partial class InicialAll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,21 @@ namespace MoviesApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MovieRental", b =>
+                {
+                    b.Property<int>("MoviesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MoviesId", "RentalId");
+
+                    b.HasIndex("RentalId");
+
+                    b.ToTable("MovieRental");
+                });
+
             modelBuilder.Entity("MoviesApi.Entidades.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -32,10 +47,6 @@ namespace MoviesApi.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -58,15 +69,19 @@ namespace MoviesApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Descriptión")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ReleaseYear")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Movies");
                 });
@@ -85,15 +100,43 @@ namespace MoviesApi.Migrations
                     b.Property<DateTime>("RentaDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RentalRates")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("Rentals");
+                });
+
+            modelBuilder.Entity("MovieRental", b =>
+                {
+                    b.HasOne("MoviesApi.Entidades.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MoviesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoviesApi.Entidades.Rental", null)
+                        .WithMany()
+                        .HasForeignKey("RentalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoviesApi.Entidades.Movie", b =>
+                {
+                    b.HasOne("MoviesApi.Entidades.Category", "Category")
+                        .WithMany("Movies")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("MoviesApi.Entidades.Category", b =>
+                {
+                    b.Navigation("Movies");
                 });
 #pragma warning restore 612, 618
         }

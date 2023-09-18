@@ -6,8 +6,7 @@
         public int MovieId { get; set; }
         public DateTime RentaDate { get; set; }
         public DateTime ReturnDate { get; set; }
-        public int RentalRates { get; set; }
-        public List<Movie> movies { get; set; }
+        public virtual List<Movie> Movies { get; set; }
 
     }
 }

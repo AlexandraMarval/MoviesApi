@@ -11,6 +11,8 @@ namespace MoviesApi.AutoMapper
             CreateMap<MovieCreacionDTO, Movie>();
             CreateMap<CategoryCreacionDTO, Category>();
             CreateMap<Movie, MovieDTO>();
+            CreateMap<Category, CategoryDTO>();
+            CreateMap<Rental, RentalDTO>();
         }
     }
 }

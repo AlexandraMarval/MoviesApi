@@ -1,55 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MoviesApi.DTOs;
 using MoviesApi.Entidades;
+using MoviesApi.Service;
 
 namespace MoviesApi.Controllers
 {
     [ApiController]
     [Route("api/rental")]
     public class RentalsController : ControllerBase
-    {
-        private readonly ApplicationDbContext context;
+    {     
+        private readonly IRentalMovieService rentalMovieService;
 
-        public RentalsController(ApplicationDbContext context)
-        {
-            this.context = context;
-        }
-
-        [HttpGet("int:id")]
-        public async Task<ActionResult> Get(int id)
-        {
-           var rental = context.Rentals.FirstOrDefaultAsync(rental => rental.Id == id);
-           return Ok(rental);
-        }
-
-        [HttpGet("listado")]
-        public async Task<ActionResult<List<Rental>>> Get()
-        {
-            return await context.Rentals.ToListAsync();
-        }
+        public RentalsController(IRentalMovieService rentalMovieService)
+        {          
+          
+            this.rentalMovieService = rentalMovieService;
+        } 
 
         [HttpPost]
-        public async Task<ActionResult> Post(Rental rental)
+        public async Task<ActionResult<MovieDTO>> Post(RentalCreacionDTO rentalCreacionDTO)
         {
-            context.Add(rental);
-            await context.SaveChangesAsync();
-            return Ok(rental);
-        }
+           var rental = await rentalMovieService.RentalMovie(rentalCreacionDTO);
 
-        [HttpPut]
-        public async Task<ActionResult> Put(Rental rental)
-        {
-            context.Add(rental);
-            await context.SaveChangesAsync();
-            return Ok(rental);
-        }
+            if (rental == null)
+            {
+                return NotFound("No se encontro la pelicula");
+            }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete(Rental rental)
-        {
-            context.Remove(rental);
-            await context.SaveChangesAsync();
-            return Ok(rental);
+           return Ok(rental);
         }
     }
 }

@@ -13,16 +13,19 @@ namespace MoviesApi.Controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
 
-        public CategoriesController(ApplicationDbContext context, IMapper mapper)
+        public CategoriesController(
+            ApplicationDbContext context, 
+            IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Category>>> Get()
+        public async Task<ActionResult<List<CategoryDTO>>> Get()
         {
-            return await context.Categories.ToListAsync();
+            var category = await context.Categories.ToListAsync();
+            return Ok(category);
         }
 
         [HttpPost(Name = "crearCategoria")]
