@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesApi.DTOs;
 using MoviesApi.Entidades;
+using MoviesApi.Service;
 
 namespace MoviesApi.Controllers
 {
@@ -18,29 +19,16 @@ namespace MoviesApi.Controllers
             this.context = context;
             this.mapper = mapper;
         }
-
-        [HttpGet("int:id")]
-        public async Task<ActionResult<MovieDTO>> Get(int id)
-        {
-            var movie = await context.Movies.FirstOrDefaultAsync(movie => movie.Id == id);
-
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            return mapper.Map<MovieDTO>(movie);
-            
-        }
-
+     
         [HttpGet(Name = "obtenerPeliculas")]
-        public async Task<ActionResult<List<MovieDTO>>> Get()
+        public async Task<ActionResult<List<MovieDTO>>> GetMovieList()
         {
             var movies = await context.Movies.ToListAsync();
             return mapper.Map<List<MovieDTO>>(movies);
         }
 
         [HttpPost(Name = "crearPelicula")]
-        public async Task<ActionResult> Post(MovieCreacionDTO movieCreacionDTO)
+        public async Task<ActionResult> CreateMovie(MovieCreacionDTO movieCreacionDTO)
         {
             var existePeliculaConElMismoNombre = await context.Movies.AnyAsync(movie => movie.Name == movieCreacionDTO.Name);
 
@@ -48,25 +36,45 @@ namespace MoviesApi.Controllers
             {
                 return BadRequest($"Ya existe una pelicula con ese mismo nombre{movieCreacionDTO.Name}");
             }
-            var movie =  mapper.Map<Movie>(movieCreacionDTO);
+            var movie = mapper.Map<Movie>(movieCreacionDTO);
 
             context.Add(movie);
             await context.SaveChangesAsync();
-            return Ok();
+
+            var movieDTO = mapper.Map<MovieDTO>(movie);
+
+            return Ok(movieDTO);
         }
 
-        [HttpPut("int:id")]
-        public async Task<ActionResult> Put(int id)
+        [HttpPut("{id:int}", Name = "ActualizarMovie")]
+        public async Task<ActionResult> UpdateMovie(MovieCreacionDTO movieCreacionDTO, int id)
         {
-            var existeMovie = context.Movies.FirstOrDefault(movie => movie.Id == id);
+            var existetheMovie = await context.Movies.AnyAsync(movie => movie.Id ==id);
 
-            if (existeMovie == null)
+            if(!existetheMovie) 
             {
-                return BadRequest();
+                return NotFound("No se puede actualizar");
             }
-            context.Update(existeMovie);
+            var movie = mapper.Map<Movie>(movieCreacionDTO);
+            movie.Id = id;
+
+            context.Update(movie);
             await context.SaveChangesAsync();
-            return Ok(existeMovie);
+            return NoContent();
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteMovie(int id)
+        {
+            var deleteMovie = await context.Movies.AnyAsync(movie => movie.Id == id);
+            if (!deleteMovie)
+            {
+                return NotFound("No se puede eleminar la movie");
+            }
+            context.Remove(new Movie() { Id = id});
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
     }
 }

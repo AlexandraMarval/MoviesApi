@@ -10,26 +10,41 @@ namespace MoviesApi.Controllers
     [ApiController]
     [Route("api/rental")]
     public class RentalsController : ControllerBase
-    {     
+    {
         private readonly IRentalMovieService rentalMovieService;
 
         public RentalsController(IRentalMovieService rentalMovieService)
-        {          
-          
+        {
+
             this.rentalMovieService = rentalMovieService;
-        } 
+        }
 
         [HttpPost]
-        public async Task<ActionResult<MovieDTO>> Post(RentalCreacionDTO rentalCreacionDTO)
+        public async Task<ActionResult<MovieDTO>> RentalMovie(RentalCreacionDTO rentalCreacionDTO)
         {
-           var rental = await rentalMovieService.RentalMovie(rentalCreacionDTO);
+            var respuestaRentals = await rentalMovieService.RentalMovie(rentalCreacionDTO);
 
-            if (rental == null)
+            if (respuestaRentals == null)
             {
                 return NotFound("No se encontro la pelicula");
             }
-
-           return Ok(rental);
+            return Ok(respuestaRentals);
         }
+
+        [HttpPut]
+        public async Task<ActionResult<MovieDTO>> Put(RentalCreacionDTO rentalCreacionDTO)
+        {
+            var returnDate = await rentalMovieService.ReturnDate(rentalCreacionDTO);
+
+            if(returnDate == null)
+            {
+                return NotFound("No se puede actualizar la pelicula");
+            }
+            else
+            {
+                return Ok($"¡Actualizado con exito!");
+            }
+        }
+
     }
 }

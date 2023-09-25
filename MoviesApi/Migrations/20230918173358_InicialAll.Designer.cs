@@ -12,7 +12,7 @@ using MoviesApi;
 namespace MoviesApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230918110717_InicialAll")]
+    [Migration("20230918173358_InicialAll")]
     partial class InicialAll
     {
         /// <inheritdoc />
@@ -69,8 +69,10 @@ namespace MoviesApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Descriptión")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

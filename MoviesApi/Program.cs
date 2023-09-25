@@ -1,6 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MoviesApi;
-using MoviesApi.Filter;
 using MoviesApi.Service;
 using System.Text.Json.Serialization;
 
@@ -16,7 +16,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<IRentalMovieService, RentalMovieService>();
-builder.Services.AddTransient<NotFoundException>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddAuthentication();
+//builder.Services.AddTransient<NotFoundException>();
 
 builder.Services.AddResponseCaching();
 

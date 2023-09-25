@@ -8,11 +8,16 @@ namespace MoviesApi.AutoMapper
     {
         public AutoMapperProfiles() 
         {
-            CreateMap<MovieCreacionDTO, Movie>();
+            CreateMap<MovieCreacionDTO, Movie>()
+                .AfterMap((dto, movie) =>
+                {
+                    movie.Available = true;
+                });
             CreateMap<CategoryCreacionDTO, Category>();
-            CreateMap<Movie, MovieDTO>();
+            CreateMap<MovieCreacionDTO, MovieDTO>();
+            CreateMap<RentalCreacionDTO, Rental>();
             CreateMap<Category, CategoryDTO>();
-            CreateMap<Rental, RentalDTO>();
+            CreateMap<Movie, MovieDTO>();         
         }
     }
 }
