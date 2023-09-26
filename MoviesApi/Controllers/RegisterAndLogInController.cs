@@ -15,11 +15,13 @@ namespace MoviesApi.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
+        private readonly SignInManager<IdentityUser> signInManager;
 
-        public RegisterAndLogInController(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public RegisterAndLogInController(UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager)
         {
             this.userManager = userManager;
             this.configuration = configuration;
+            this.signInManager = signInManager;
         }
 
         [HttpPost("Register")]
@@ -37,6 +39,22 @@ namespace MoviesApi.Controllers
                 return BadRequest(response.Errors);
             }
         }
+
+        [HttpPost("Login")]
+        public async Task<ActionResult<AuthenticationResponse>> Login(UserCredentials userCredentials)
+        {
+            var result = await signInManager.PasswordSignInAsync(userCredentials.Email, userCredentials.Password, isPersistent: false, lockoutOnFailure: false);
+
+            if(result.Succeeded)
+            {
+                return BuildToken(userCredentials);
+            }
+            else
+            {
+                return BadRequest("Login incorrecto");
+            }
+        }
+
         private AuthenticationResponse BuildToken(UserCredentials userCredentials)
         {
             var claims = new List<Claim>()

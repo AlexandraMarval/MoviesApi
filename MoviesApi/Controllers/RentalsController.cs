@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesApi.DTOs;
@@ -9,6 +11,7 @@ namespace MoviesApi.Controllers
 {
     [ApiController]
     [Route("api/rental")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RentalsController : ControllerBase
     {
         private readonly IRentalMovieService rentalMovieService;

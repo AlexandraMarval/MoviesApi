@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesApi;
 using MoviesApi.Service;
 using System.Security.Cryptography.Xml;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,15 +42,22 @@ builder.Services.AddSwaggerGen(c =>
             },
             new string[]{}
         }
-
     });
-
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<IRentalMovieService, RentalMovieService>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opciones => opciones.TokenValidationParameters = new TokenValidationParameters
+{
+    ValidateIssuer = false,
+    ValidateAudience = false,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["keyjwt"])),
+    ClockSkew = TimeSpan.Zero
+});
+builder.Services.AddAuthorization(opciones => opciones.AddPolicy("EsAdmin", policy => policy.RequireClaim("esAdmin")));
 //builder.Services.AddTransient<NotFoundException>();
 
 builder.Services.AddResponseCaching();
