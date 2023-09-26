@@ -31,6 +31,7 @@ namespace MoviesApi.Controllers
         }
 
         [HttpPost(Name = "crearPelicula")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsEmpleado")]
         public async Task<ActionResult> CreateMovie(MovieCreacionDTO movieCreacionDTO)
         {
             var existePeliculaConElMismoNombre = await context.Movies.AnyAsync(movie => movie.Name == movieCreacionDTO.Name);
@@ -50,6 +51,7 @@ namespace MoviesApi.Controllers
         }
 
         [HttpPut("{id:int}", Name = "ActualizarMovie")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsEmpleado")]
         public async Task<ActionResult> UpdateMovie(MovieCreacionDTO movieCreacionDTO, int id)
         {
             var existetheMovie = await context.Movies.AnyAsync(movie => movie.Id ==id);
@@ -67,6 +69,7 @@ namespace MoviesApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsEmpleado")]
         public async Task<ActionResult> DeleteMovie(int id)
         {
             var deleteMovie = await context.Movies.AnyAsync(movie => movie.Id == id);
@@ -78,6 +81,5 @@ namespace MoviesApi.Controllers
             await context.SaveChangesAsync();
             return NoContent();
         }
-
     }
 }

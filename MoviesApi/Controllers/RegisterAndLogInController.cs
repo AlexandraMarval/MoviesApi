@@ -32,7 +32,7 @@ namespace MoviesApi.Controllers
 
             if (response.Succeeded)
             {
-                return BuildToken(userCredentials);
+                return await BuildToken(userCredentials);
             }
             else
             {
@@ -47,7 +47,7 @@ namespace MoviesApi.Controllers
 
             if(result.Succeeded)
             {
-                return BuildToken(userCredentials);
+                return await BuildToken(userCredentials);
             }
             else
             {
@@ -55,12 +55,18 @@ namespace MoviesApi.Controllers
             }
         }
 
-        private AuthenticationResponse BuildToken(UserCredentials userCredentials)
+        private async Task<AuthenticationResponse> BuildToken(UserCredentials userCredentials)
         {
             var claims = new List<Claim>()
             {
                 new Claim("Email", userCredentials.Email),
             };
+
+            var users = await userManager.FindByEmailAsync(userCredentials.Email);
+            var clamsDb = await userManager.GetClaimsAsync(users);
+
+            claims.AddRange(clamsDb);
+
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["keyjwt"]));
             var Creds =  new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -74,6 +80,22 @@ namespace MoviesApi.Controllers
                 Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
                 Expiration = expiration,
             };
+        }
+
+        [HttpPost("EsEmpleado")]
+        public async Task<ActionResult> EsEmpleado(EmpleadoDTO empleadoDTO)
+        {
+            var users = await userManager.FindByEmailAsync(empleadoDTO.Email);
+            await userManager.AddClaimAsync(users, new Claim("esEmpleado", "1"));
+            return NoContent();
+        }
+
+         [HttpPost("RemoveEmpleado")]
+        public async Task<ActionResult> RemoveEmpleado(EmpleadoDTO empleadoDTO)
+        {
+            var users = await userManager.FindByEmailAsync(empleadoDTO.Email);
+            await userManager.RemoveClaimAsync(users, new Claim("esEmpleado", "1"));
+            return NoContent();
         }
     }
 }

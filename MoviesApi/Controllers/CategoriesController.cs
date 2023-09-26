@@ -10,7 +10,7 @@ namespace MoviesApi.Controllers
 {
     [ApiController]
     [Route("api/category")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsEmpleado")]
     public class CategoriesController : ControllerBase
     {
         private readonly ApplicationDbContext context;

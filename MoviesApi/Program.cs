@@ -57,7 +57,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["keyjwt"])),
     ClockSkew = TimeSpan.Zero
 });
-builder.Services.AddAuthorization(opciones => opciones.AddPolicy("EsAdmin", policy => policy.RequireClaim("esAdmin")));
+builder.Services.AddAuthorization(opciones => opciones.AddPolicy("EsEmpleado", policy => policy.RequireClaim("esEmpleado")));
 //builder.Services.AddTransient<NotFoundException>();
 
 builder.Services.AddResponseCaching();

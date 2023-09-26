@@ -11,7 +11,7 @@ namespace MoviesApi.Controllers
 {
     [ApiController]
     [Route("api/rental")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsEmpleado")]
     public class RentalsController : ControllerBase
     {
         private readonly IRentalMovieService rentalMovieService;
